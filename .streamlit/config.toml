@@ -1,0 +1,7 @@
+[server]
+# Отключаем отслеживание изменений в сторонних библиотеках
+fastRerun = true
+
+[runner]
+# Игнорируем site-packages при поиске изменений кода
+magicEnabled = false

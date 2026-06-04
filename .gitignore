@@ -1,0 +1,19 @@
+# Виртуальное окружение (Virtual Environment)
+venv/
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Локальные переменные окружения и секретные ключи
+.env
+.env.local
+
+# Локальная база данных, индексы и загруженные PDF-файлы
+data/
+
+# Временные файлы операционной системы и Streamlit
+.streamlit/runtime/
+.DS_Store
+Thumbs.db
