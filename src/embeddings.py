@@ -11,17 +11,16 @@ if api_key:
     genai.configure(api_key=api_key)
 
 class DirectGoogleEmbeddings(Embeddings):
-    """Кастомный класс эмбеддингов, использующий чистый Google SDK без префиксов моделей"""
+    """Кастомный класс эмбеддингов, использующий стабильную модель embedding-001"""
     def embed_documents(self, texts):
         if not texts:
             return []
         
-        # Перестраховка: если LangChain передал объекты Document вместо строк, берем их текст
         cleaned_texts = [t.page_content if hasattr(t, 'page_content') else str(t) for t in texts]
         
-        # Передаем просто "text-embedding-004" БЕЗ "models/"
+        # Заменили на универсальную "embedding-001"
         result = genai.embed_content(
-            model="text-embedding-004",
+            model="embedding-001",
             content=cleaned_texts,
             task_type="retrieval_document"
         )
@@ -33,8 +32,9 @@ class DirectGoogleEmbeddings(Embeddings):
         
         cleaned_text = text.page_content if hasattr(text, 'page_content') else str(text)
         
+        # Заменили на универсальную "embedding-001"
         result = genai.embed_content(
-            model="text-embedding-004",
+            model="embedding-001",
             content=cleaned_text,
             task_type="retrieval_query"
         )
