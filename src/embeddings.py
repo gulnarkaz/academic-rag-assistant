@@ -1,11 +1,11 @@
 import os
-from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from langchain_community.vectorstores import FAISS
 
 def get_embeddings():
-    """Инициализирует отличную локальную и бесплатную модель эмбеддингов"""
-    # Эта модель от Microsoft прекрасно справляется с техническими и научными текстами
-    return HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
+    """Инициализирует облачную модель эмбеддингов от Google, экономя память сервера"""
+    # API-ключ автоматически подтянется из переменных окружения Streamlit Secrets
+    return GoogleGenerativeAIEmbeddings(model="text-embedding-004")
 
 def create_vectorstore(docs):
     """Создает векторную базу FAISS на основе кусков текста"""
