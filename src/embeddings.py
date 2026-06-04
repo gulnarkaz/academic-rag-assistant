@@ -1,11 +1,42 @@
 import os
-from langchain_google_genai import GoogleGenerativeAIEmbeddings
+from dotenv import load_dotenv
+import google.generativeai as genai
 from langchain_community.vectorstores import FAISS
+from langchain_core.embeddings import Embeddings
+
+load_dotenv()
+
+# Настраиваем ключ (в облаке он подтянется из Secrets)
+api_key = os.getenv("GEMINI_API_KEY")
+if api_key:
+    genai.configure(api_key=api_key)
+
+class DirectGoogleEmbeddings(Embeddings):
+    """Кастомный класс эмбеддингов, который делает запросы напрямую через официальный Google SDK, избегая ошибок 404 в LangChain"""
+    def embed_documents(self, texts):
+        if not texts:
+            return []
+        # Вызываем стабильный метод через официальный SDK
+        result = genai.embed_content(
+            model="models/text-embedding-004",
+            content=texts,
+            task_type="retrieval_document"
+        )
+        return result['embedding']
+
+    def embed_query(self, text):
+        if not text:
+            return []
+        result = genai.embed_content(
+            model="models/text-embedding-004",
+            content=text,
+            task_type="retrieval_query"
+        )
+        return result['embedding']
 
 def get_embeddings():
-    """Инициализирует облачную модель эмбеддингов от Google, экономя память сервера"""
-    # API-ключ автоматически подтянется из переменных окружения Streamlit Secrets
-    return GoogleGenerativeAIEmbeddings(model="text-embedding-004")
+    """Возвращает наш кастомный, ультра-надежный класс для работы с эмбеддингами"""
+    return DirectGoogleEmbeddings()
 
 def create_vectorstore(docs):
     """Создает векторную базу FAISS на основе кусков текста"""
